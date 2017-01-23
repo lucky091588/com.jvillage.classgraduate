@@ -149,3 +149,30 @@ function classgraduate_civicrm_navigationMenu(&$menu) {
   ));
   _classgraduate_civix_navigationMenu($menu);
 } // */
+
+function _classgraduate_var_get($name) {
+  // TODO: If/when budget allows, we can refactor this to support settings
+  // configurable in the UI. For now, this function uses some simple logic
+  // to determine the right values itself.
+  static $vars = array();
+  if (!isset($vars[$name])) {
+    switch ($name) {
+      // FIXME: this cannot remain hard-coded in production.
+      case 'classgraduate_graduating_class_custom_field_id':
+        $vars[$name] = 218;
+        break;
+      // FIXME: this cannot remain hard-coded in production.
+      case 'classgraduate_current_grade_custom_field_id':
+        $vars[$name] = 219;
+        break;
+      case 'classgraduate_graduation_cutoff_date':
+        $vars[$name] = '06-01';
+        break;
+    }
+  }
+  return $vars[$name];
+}
+
+// FIXME:
+// Write hook_civicrm_post() implementation to update $classgraduate_current_grade_custom_field_id based on $graduating_class_custom_field_id;
+//

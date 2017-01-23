@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<CustomData>
+  <CustomGroups>
+    <CustomGroup>
+      <name>Grade_Class</name>
+      <title>Grade/Class</title>
+      <extends>Contact</extends>
+      <style>Inline</style>
+      <collapse_display>1</collapse_display>
+      <help_pre></help_pre>
+      <help_post></help_post>
+      <weight>51</weight>
+      <is_active>1</is_active>
+      <table_name>civicrm_value_grade_class_57</table_name>
+      <is_multiple>0</is_multiple>
+      <collapse_adv_display>0</collapse_adv_display>
+      <created_date>2017-01-17 13:21:58</created_date>
+      <is_reserved>0</is_reserved>
+    </CustomGroup>
+  </CustomGroups>
+  <CustomFields>
+    <CustomField>
+      <name>Graduating_Class</name>
+      <label>Graduating Class</label>
+      <data_type>Int</data_type>
+      <html_type>Text</html_type>
+      <is_required>0</is_required>
+      <is_searchable>1</is_searchable>
+      <is_search_range>1</is_search_range>
+      <weight>1</weight>
+      <help_post>In what year is this student expected to graduate?</help_post>
+      <is_active>1</is_active>
+      <is_view>0</is_view>
+      <text_length>255</text_length>
+      <note_columns>60</note_columns>
+      <note_rows>4</note_rows>
+      <column_name>graduating_class_218</column_name>
+      <in_selector>0</in_selector>
+      <custom_group_name>Grade_Class</custom_group_name>
+    </CustomField>
+    <CustomField>
+      <name>Current_Grade</name>
+      <label>Current Grade</label>
+      <data_type>Int</data_type>
+      <html_type>Text</html_type>
+      <is_required>0</is_required>
+      <is_searchable>1</is_searchable>
+      <is_search_range>1</is_search_range>
+      <weight>2</weight>
+      <help_post>This student's current grade level, auto-calculated based on Graduating Class.</help_post>
+      <is_active>1</is_active>
+      <is_view>1</is_view>
+      <text_length>255</text_length>
+      <note_columns>60</note_columns>
+      <note_rows>4</note_rows>
+      <column_name>current_grade_219</column_name>
+      <in_selector>0</in_selector>
+      <custom_group_name>Grade_Class</custom_group_name>
+    </CustomField>
+  </CustomFields>
+</CustomData>
