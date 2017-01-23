@@ -159,16 +159,24 @@ function _classgraduate_var_get($name) {
     switch ($name) {
       // FIXME: this cannot remain hard-coded in production.
       case 'classgraduate_graduating_class_custom_field_id':
-        $vars[$name] = 218;
+        $result = civicrm_api3('CustomField', 'getsingle', array(
+          'custom_group_id' => "Grade_Class",
+          'name' => "Graduating_Class",
+        ));
+        $vars[$name] = $result['id'];
         break;
-      // FIXME: this cannot remain hard-coded in production.
       case 'classgraduate_current_grade_custom_field_id':
-        $vars[$name] = 219;
+        $result = civicrm_api3('CustomField', 'getsingle', array(
+          'custom_group_id' => "Grade_Class",
+          'name' => "Current_Grade",
+        ));
+        $vars[$name] = $result['id'];
         break;
-      // FIXME: this cannot remain hard-coded in production.
       case 'classgraduate_gradeclass_custom_group_id':
-        dsm('setting classgraduate_gradeclass_custom_group_id');
-        $vars[$name] = 57;
+        $result = civicrm_api3('CustomGroup', 'getsingle', array(
+          'name' => "Grade_Class",
+        ));
+        $vars[$name] = $result['id'];
         break;
       case 'classgraduate_graduation_cutoff_date':
         $vars[$name] = '06-01';
@@ -178,8 +186,6 @@ function _classgraduate_var_get($name) {
   return $vars[$name];
 }
 
-// FIXME:
-// Write hook_civicrm_post() implementation to update $classgraduate_current_grade_custom_field_id based on $graduating_class_custom_field_id;
 function classgraduate_civicrm_custom($op, $groupID, $entityID, &$params) {
   if (
     ($op == 'edit' || $op == 'create')
