@@ -13,7 +13,7 @@ return array (
       'version' => 3,
       'name' => 'Call Classgraduate.Updateall API',
       'description' => 'Update ClassGraduate "Current Grade" values for all contacts.',
-      'run_frequency' => 'Monthly',
+      'run_frequency' => 'Daily',
       'api_entity' => 'Classgraduate',
       'api_action' => 'Updateall',
       'parameters' => '',

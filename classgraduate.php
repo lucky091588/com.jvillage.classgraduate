@@ -165,6 +165,11 @@ function _classgraduate_var_get($name) {
       case 'classgraduate_current_grade_custom_field_id':
         $vars[$name] = 219;
         break;
+      // FIXME: this cannot remain hard-coded in production.
+      case 'classgraduate_gradeclass_custom_group_id':
+        dsm('setting classgraduate_gradeclass_custom_group_id');
+        $vars[$name] = 57;
+        break;
       case 'classgraduate_graduation_cutoff_date':
         $vars[$name] = '06-01';
         break;
@@ -175,4 +180,46 @@ function _classgraduate_var_get($name) {
 
 // FIXME:
 // Write hook_civicrm_post() implementation to update $classgraduate_current_grade_custom_field_id based on $graduating_class_custom_field_id;
-//
+function classgraduate_civicrm_custom($op, $groupID, $entityID, &$params) {
+  if (
+    ($op == 'edit' || $op == 'create')
+    && $groupID == _classgraduate_var_get('classgraduate_gradeclass_custom_group_id')
+  ) {
+    foreach ($params as $param) {
+      if ($param['custom_field_id'] == _classgraduate_var_get('classgraduate_graduating_class_custom_field_id')) {
+        civicrm_api3('Classgraduate', 'Updatesingle', array(
+          'id' => $entityID,
+          'graduating_class' => $param['value'],
+        ));
+      }
+    }
+  }
+}
+
+function _classgraduate_calculate_grade($graduating_class) {
+  if (empty($graduating_class)) {
+    return '';
+  }
+  static $grades_per_graduating_class = array();
+  if(!isset($grades_per_graduating_class[$graduating_class])) {
+    $graduation_cutoff_date = _classgraduate_var_get('classgraduate_graduation_cutoff_date');
+
+    // Math examples are noted in comments.
+    // e.g., $graduating_class = 2020;
+    $now_year = date('Y'); // e.g., 2018
+    $year_difference = ($graduating_class - $now_year); // e.g., 2
+    if (date('z') >= date('z', strtotime("{$now_year}-{$graduation_cutoff_date}"))) {
+      // If today's day-of-year is greater than the day-of-year of the cutoff date.
+      $grade = (12 - $year_difference + 1); // e.g., 11
+    }
+    else {
+      $grade = (12 - $year_difference); // e.g., 10
+    }
+    if ($grade > 12) {
+      // If grade is over 12, they've graduated already and should have no grade.
+      $grade = '';
+    }
+    $grades_per_graduating_class[$graduating_class] = $grade;
+  }
+  return $grades_per_graduating_class[$graduating_class];
+}
