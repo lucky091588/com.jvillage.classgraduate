@@ -157,7 +157,6 @@ function _classgraduate_var_get($name) {
   static $vars = array();
   if (!isset($vars[$name])) {
     switch ($name) {
-      // FIXME: this cannot remain hard-coded in production.
       case 'classgraduate_graduating_class_custom_field_id':
         $result = civicrm_api3('CustomField', 'getsingle', array(
           'custom_group_id' => "Grade_Class",
@@ -221,7 +220,7 @@ function _classgraduate_calculate_grade($graduating_class) {
     else {
       $grade = (12 - $year_difference); // e.g., 10
     }
-    if ($grade > 12) {
+    if ($grade > 12 || $grade < 1) {
       // If grade is over 12, they've graduated already and should have no grade.
       $grade = '';
     }

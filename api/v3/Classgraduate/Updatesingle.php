@@ -9,7 +9,11 @@
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC/API+Architecture+Standards
  */
 function _civicrm_api3_classgraduate_Updatesingle_spec(&$spec) {
-  $spec['id']['api.required'] = 1;
+  $spec['id'] = array(
+    'api.required' => 1,
+    'name' => 'id',
+    'title' => 'Contact ID',
+  );
   $spec['graduating_class'] = array(
     'name' => 'graduating_class',
     'title' => 'Graduating Class',
@@ -18,7 +22,9 @@ function _civicrm_api3_classgraduate_Updatesingle_spec(&$spec) {
 }
 
 /**
- * Classgraduate.Update API
+ * Classgraduate.Updatesingle API
+ *
+ * Update Current Grade field for a single contact.
  *
  * @param array $params
  * @return array API result descriptor
