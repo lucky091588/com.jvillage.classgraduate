@@ -5,7 +5,7 @@
     <CustomGroup>
       <name>Grade_Class</name>
       <title>Grade/Class</title>
-      <extends>Contact</extends>
+      <extends>Individual</extends>
       <style>Inline</style>
       <collapse_display>1</collapse_display>
       <help_pre></help_pre>
