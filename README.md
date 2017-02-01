@@ -14,7 +14,7 @@ A custom field group attached to all contacts, with two custom fields
 This scheduled job is configured to run daily as part of CiviCRM's Scheduled Job functionality and will update the Current Grade field for all contacts based on the current date and the value of the individual's Graduating Class field.
 
 ## Assumptions and limitations
-* The extension assumes that students are promoted annually on June 1.  This hard-coded value can be edited in the function `_classgraduate_var_get()`.
+* The extension assumes that students are promoted annually on June 15.  This hard-coded value can be edited in the function `_classgraduate_var_get()`.
 * Students are assumed to graduate at the completion of Grade 12.
 * The Graduating Class field is a simple text integer field. No checking is done to ensure numbers within a sensible range (e.g., a value of 123456890 is allowed), but if a value leads to a calculated Current Grade that's not between 1 and 12, the Current Grade field will be set empty.
 

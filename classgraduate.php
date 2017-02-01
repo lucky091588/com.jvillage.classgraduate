@@ -178,7 +178,7 @@ function _classgraduate_var_get($name) {
         $vars[$name] = $result['id'];
         break;
       case 'classgraduate_graduation_cutoff_date':
-        $vars[$name] = '06-01';
+        $vars[$name] = '06-15';
         break;
     }
   }
