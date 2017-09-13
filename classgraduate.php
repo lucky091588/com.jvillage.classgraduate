@@ -150,6 +150,9 @@ function classgraduate_civicrm_navigationMenu(&$menu) {
   _classgraduate_civix_navigationMenu($menu);
 } // */
 
+/**
+ * Get value for a given variable specific to this extension.
+ */
 function _classgraduate_var_get($name) {
   // TODO: If/when budget allows, we can refactor this to support settings
   // configurable in the UI. For now, this function uses some simple logic
@@ -164,6 +167,7 @@ function _classgraduate_var_get($name) {
         ));
         $vars[$name] = $result['id'];
         break;
+
       case 'classgraduate_current_grade_custom_field_id':
         $result = civicrm_api3('CustomField', 'getsingle', array(
           'custom_group_id' => "Grade_Class",
@@ -171,15 +175,18 @@ function _classgraduate_var_get($name) {
         ));
         $vars[$name] = $result['id'];
         break;
+
       case 'classgraduate_gradeclass_custom_group_id':
         $result = civicrm_api3('CustomGroup', 'getsingle', array(
           'name' => "Grade_Class",
         ));
         $vars[$name] = $result['id'];
         break;
+
       case 'classgraduate_graduation_cutoff_date':
         $vars[$name] = '06-15';
         break;
+
     }
   }
   return $vars[$name];
@@ -206,7 +213,7 @@ function _classgraduate_calculate_grade($graduating_class) {
     return '';
   }
   static $grades_per_graduating_class = array();
-  if(!isset($grades_per_graduating_class[$graduating_class])) {
+  if (!isset($grades_per_graduating_class[$graduating_class])) {
     $graduation_cutoff_date = _classgraduate_var_get('classgraduate_graduation_cutoff_date');
 
     // Math examples are noted in comments.
@@ -220,8 +227,17 @@ function _classgraduate_calculate_grade($graduating_class) {
     else {
       $grade = (12 - $year_difference); // e.g., 10
     }
-    if ($grade > 12 || $grade < 1) {
+    if ($grade > 12) {
       // If grade is over 12, they've graduated already and should have no grade.
+      $grade = '';
+    }
+    elseif ($grade == 0) {
+      $grade = 'Kindergarten';
+    }
+    elseif ($grade == -1) {
+      $grade = 'Pre-K';
+    }
+    elseif ($grade < -1) {
       $grade = '';
     }
     $grades_per_graduating_class[$graduating_class] = $grade;

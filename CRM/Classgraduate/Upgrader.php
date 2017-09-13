@@ -35,9 +35,34 @@ class CRM_Classgraduate_Upgrader extends CRM_Classgraduate_Upgrader_Base {
 
   /**
    * Example: Run an external SQL script when the module is uninstalled.
-   *
-  public function uninstall() {
-   $this->executeSqlFile('sql/myuninstall.sql');
+   */
+  public function onUninstall() {
+    $getGroupResult = civicrm_api3('CustomGroup', 'get', array(
+      'sequential' => 1,
+      'name' => "grade_class",
+    ));
+    $gid = CRM_Utils_Array::value('id', $getGroupResult);
+    if (!$gid) {
+      return;
+    }
+
+    $getFieldResult = civicrm_api3('CustomField', 'get', array(
+      'sequential' => 1,
+      'custom_group_id' => "grade_class",
+      'options' => array('limit' => 0),
+    ));
+    $fieldValues = CRM_Utils_Array::value('values', $getFieldResult, array());
+
+    foreach ($fieldValues as $fieldValue) {
+      $deleteFieldResult = civicrm_api3('CustomField', 'delete', array(
+        'id' => $fieldValue['id'],
+      ));
+    }
+
+    $deleteGroupResult = civicrm_api3('CustomGroup', 'delete', array(
+      'id' => $gid,
+    ));
+
   }
 
   /**
@@ -55,17 +80,66 @@ class CRM_Classgraduate_Upgrader extends CRM_Classgraduate_Upgrader_Base {
   }
 
   /**
-   * Example: Run a couple simple queries.
+   * Remove old integer custom field "Current Grade" and create new string
+   * custom field "Current Grade".
    *
    * @return TRUE on success
    * @throws Exception
-   *
-  public function upgrade_4200() {
-    $this->ctx->log->info('Applying update 4200');
-    CRM_Core_DAO::executeQuery('UPDATE foo SET bar = "whiz"');
-    CRM_Core_DAO::executeQuery('DELETE FROM bang WHERE willy = wonka(2)');
+   */
+  public function upgrade_4700() {
+    $this->ctx->log->info('Applying update 4700');
+    $getCurrentGradeFieldResult = civicrm_api3('CustomField', 'get', array(
+      'sequential' => 1,
+      'custom_group_id' => "Grade_Class",
+      'label' => "Current Grade",
+    ));
+    $oldFid = CRM_Utils_Array::value('id', $getCurrentGradeFieldResult);
+    if (empty($oldFid)) {
+      return TRUE;
+    }
+
+    // Calculate a weight for the new "current grade" field, greater than
+    // "graduating class" field weight.
+    $getGraduatingClassFieldResult = civicrm_api3('CustomField', 'get', array(
+      'sequential' => 1,
+      'custom_group_id' => "Grade_Class",
+      'label' => "Graduating Class",
+    ));
+    $graduatingClassFieldValues = CRM_Utils_Array::value(0, $getGraduatingClassFieldResult['values']);
+    $newWeight = (CRM_Utils_Array::value('weight', $graduatingClassFieldValues, 0) + 10);
+
+    // Delete the old field.
+    $deleteFieldResult = civicrm_api3('CustomField', 'delete', array(
+      'id' => $oldFid,
+    ));
+
+    // Define parameters and create the new field.
+    $oldParams = CRM_Utils_Array::value(0, $getCurrentGradeFieldResult['values']);
+    $paramKeysToCopy = array(
+      'custom_group_id',
+      'name',
+      'label',
+      'html_type',
+      'is_required',
+      'is_searchable',
+      'is_search_range',
+      'help_post',
+      'is_active',
+      'is_view',
+      'text_length',
+      'note_columns',
+      'note_rows',
+    );
+    $newParams = array_intersect_key($oldParams, array_flip($paramKeysToCopy));
+    $newParams['data_type'] = 'String';
+    $newParams['weight'] = $newWeight;
+    $createFieldResult = civicrm_api3('CustomField', 'create', $newParams);
+
+    // Call Classgraduate.Updateall API to populate new field.
+    civicrm_api3('Classgraduate', 'Updateall', array());
+
     return TRUE;
-  } // */
+  }
 
 
   /**

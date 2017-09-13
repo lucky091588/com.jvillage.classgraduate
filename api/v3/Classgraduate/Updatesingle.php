@@ -18,7 +18,7 @@ function _civicrm_api3_classgraduate_Updatesingle_spec(&$spec) {
     'name' => 'graduating_class',
     'title' => 'Graduating Class',
     'type' => 1,
-   );
+  );
 }
 
 /**
@@ -37,11 +37,15 @@ function civicrm_api3_classgraduate_Updatesingle($params) {
   if (!isset($params['graduating_class'])) {
     $params['graduating_class'] = _civicrm_api3_classgraduate_get_class($params['id']);
   }
+  $grade = _classgraduate_calculate_grade($params['graduating_class']);
+  if (empty($grade)) {
+    $grade = 'null';
+  }
   $api_params = array(
-    'id' => $params['id'],
-    "custom_{$current_grade_custom_field_id}" => _classgraduate_calculate_grade($params['graduating_class']),
+    'entity_id' => $params['id'],
+    "custom_{$current_grade_custom_field_id}" => $grade,
   );
-  $results = civicrm_api3('Contact', 'create', $api_params);
+  $results = civicrm_api3('CustomValue', 'create', $api_params);
   return civicrm_api3_create_success(1, $params, 'Classgraduate', 'Updatesingle');
 }
 
@@ -54,9 +58,9 @@ function _civicrm_api3_classgraduate_get_class($id) {
 
   try {
     $results = civicrm_api3('Contact', 'getsingle', $api_params);
-  } catch (Exception $e) {
+  }
+  catch (Exception $e) {
     throw new API_Exception("No contact found for id='{$id}'.");
   }
   return $results["custom_{$graduating_class_custom_field_id}"];
 }
-

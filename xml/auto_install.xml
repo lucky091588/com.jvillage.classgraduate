@@ -42,7 +42,7 @@
     <CustomField>
       <name>Current_Grade</name>
       <label>Current Grade</label>
-      <data_type>Int</data_type>
+      <data_type>String</data_type>
       <html_type>Text</html_type>
       <is_required>0</is_required>
       <is_searchable>1</is_searchable>
